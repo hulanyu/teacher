@@ -1,0 +1,42 @@
+<html>
+	<body style="margin:0;">
+        <div id="video" style="width: 100%; height: 100%;"></div>
+	</body>
+</html>
+<script type="text/javascript" src="/static/js/third-party/ckplayer/ckplayer.min.js"></script>
+		
+<script type="text/javascript">
+    function reveivedMsg(msg) {
+        switch (msg.code) {
+            case "video_start":
+                break;
+            case "video_stop":    //结束读卡
+                if (cmdTimer != null) { clearInterval(cmdTimer); cmdTimer = null; }
+                break;
+        }
+    }
+    function sendMsg(msg) {
+        if (top == self) return;
+        top && top.postMessage(msg, '*');
+    }
+    //http://hls.open.ys7.com/openlive/1431fa4bc361431caec063218f933f9b.m3u8
+    window.addEventListener('message', function (e) { reveivedMsg(e.data); });
+    window.onload = function () {
+        var path = decodeURI(window.location.href);
+        path = path.split("?path=")[1];
+        var type = "video/" + path.substring(path.lastIndexOf(".") + 1);
+        var videoObject = {
+            container: '#video', //容器的ID或className
+            variable: 'player', //播放函数名称
+            flashplayer: false,
+            loaded: 'loadedHandler', //当播放器加载后执行的函数
+            video: [
+                [path, type, '中文高清', 0]
+		    ],
+            autoplay: true
+            //live:true,//是否是直播视频，true=直播，false=点播
+        };
+        var player = new ckplayer(videoObject);
+    };
+	function loadedHandler() { player.changeControlBarShow(false); }
+</script>

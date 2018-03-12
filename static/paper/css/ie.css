@@ -1,0 +1,179 @@
+.previewPaperA4D .a4dLeftBar {
+    left:-230pt;
+}
+.previewPaperA4D .leftDown, .previewPaperA4D .rightDown {
+    height: 900pt;
+    margin-top: 930pt;    
+}
+.previewPaperA4D .leftDown2, .previewPaperA4D .rightDown2 {
+    height: 900pt;
+    margin-top: 1855pt;    
+}
+.previewPaperA4D .leftDown3, .previewPaperA4D .rightDown3 {
+    height: 900pt;
+    margin-top: 2800pt;    
+}
+.previewPaperA4D .leftDown4, .previewPaperA4D .rightDown4 {
+    height: 900pt;
+    margin-top: 3725pt;    
+}
+.previewPaperA4D .leftDown5, .previewPaperA4D .rightDown5 {
+    height: 900pt;
+    margin-top: 4650pt;    
+}
+
+.previewPaperA3 .a4dLeftBar {
+    left:-265pt;
+}
+.previewPaperA3 .a4dMi .text1, .previewPaperA3 .a4dMi .text2, .previewPaperA3 .a4dMi .text3 {
+    top:-6pt;
+    font-size: 10pt;
+}
+.previewPaperA3 .left2, .previewPaperA3 .right2, .previewPaperA3 .middle2 {
+    height: 900pt;
+}
+
+
+
+/*最新a4d*/
+.previewPaperA4D p, .previewPaperA4D div, .previewPaperA4D h1, .previewPaperA4D h2 {
+    font-size: 9pt !important;
+}
+.previewPaperA4D span, .previewPaperA4D p, .previewPaperA4D table td, .previewPaper li {
+    font-size: 9pt !important;
+}
+.previewPaperA4D .a4dLeftBar {
+    left:-260pt;
+    top:370pt;
+}
+.previewPaperA4D .a4dMi {
+    top: 380pt;
+    left: -335pt;
+    width: 700pt;
+}
+.previewPaperA4D .a4dMi .text1, .previewPaperA4D .a4dMi .text2, .previewPaperA4D .a4dMi .text3 {
+    top:17pt;
+}
+.previewPaperA4D .left, .previewPaperA4D .right, .previewPaperA4D .leftDown, .previewPaperA4D .rightDown,
+.previewPaperA4D .leftDown2, .previewPaperA4D .rightDown2, .previewPaperA4D .leftDown3, .previewPaperA4D .rightDown3,
+.previewPaperA4D .leftDown4, .previewPaperA4D .rightDown4, .previewPaperA4D .leftDown5, .previewPaperA4D .rightDown5,
+.previewPaperA4D .leftDown6, .previewPaperA4D .rightDown6 {
+    width:540pt;
+    height: 710pt;
+}
+.previewPaperA4D .right, .previewPaperA4D .rightDown, .previewPaperA4D .rightDown2,
+.previewPaperA4D .rightDown3, .previewPaperA4D .rightDown4, .previewPaperA4D .rightDown5,
+.previewPaperA4D .rightDown6 {
+    margin-left: 540pt;
+}
+.previewPaperA4D .boxOne {
+    height: 550pt;
+}
+.previewPaperA4D .boxTwo, .previewPaperA4D .boxThree, .previewPaperA4D .boxFour,
+.previewPaperA4D .boxFive, .previewPaperA4D .boxSix, .previewPaperA4D .boxSeven, 
+.previewPaperA4D .boxEight, .previewPaperA4D .boxNine, .previewPaperA4D .boxTen,
+.previewPaperA4D .boxTwelve, .previewPaperA4D .boxEleven, .previewPaperA4D .boxThirteen,
+.previewPaperA4D .boxFourteen {
+     height: 700pt;
+     padding-right: 5px;
+ }
+.previewPaperA4D .leftDown, .previewPaperA4D .rightDown {
+    margin-top: 730pt;
+}
+.previewPaperA4D .leftDown2, .previewPaperA4D .rightDown2 {
+    margin-top: 1460pt;
+}
+.previewPaperA4D .leftDown3, .previewPaperA4D .rightDown3 {
+    margin-top: 2195pt;
+}
+.previewPaperA4D .leftDown4, .previewPaperA4D .rightDown4 {
+    margin-top: 2930pt;
+}
+.previewPaperA4D .leftDown5, .previewPaperA4D .rightDown5 {
+    margin-top: 3670pt;
+}
+.previewPaperA4D .leftDown6, .previewPaperA4D .rightDown6 {
+    margin-top: 4400pt;
+}
+.previewPaperA4D .leftDown3, .previewPaperA4D .rightDown3 {
+    box-sizing: content-box;
+}
+.previewPaperA4D .questions {
+    padding-top: 5px;
+}
+
+/*a3*/
+.previewPaperA3 {
+    margin-top: 20pt;
+    height: 710pt;
+}
+.previewPaperA3 .a4dLeftBar {
+    left:-260pt;
+    top:360pt;
+}
+.previewPaperA3 .a4dMi {
+    top:350pt;
+    left:-310pt;
+    width: 670pt;
+}
+.previewPaperA3 .a4dMi .text1, .previewPaperA3 .a4dMi .text2, .previewPaperA3 .a4dMi .text3 {
+    top:-7pt;
+}
+.previewPaperA3 .a4dMi .text2 {
+    left:350pt;
+}
+.previewPaperA3 .a4dMi .text3 {
+    left:550pt;
+}
+.previewPaperA3 span, .previewPaperA3 p, .previewPaperA3 table td, .previewPaperA3 li {
+    font-size: 9pt !important;
+}
+.previewPaperA3 .left, .previewPaperA3 .right, .previewPaperA3 .middle,
+.previewPaperA3 .left2, .previewPaperA3 .right2, .previewPaperA3 .middle2,
+.previewPaperA3 .left3, .previewPaperA3 .right3, .previewPaperA3 .middle3,
+.previewPaperA3 .left4, .previewPaperA3 .right4, .previewPaperA3 .middle4,
+.previewPaperA3 .left5, .previewPaperA3 .right5, .previewPaperA3 .middle5 {
+    width:360pt;
+    height: 660pt;
+}
+.previewPaperA3 .middle, .previewPaperA3 .middle2, .previewPaperA3 .middle3,
+.previewPaperA3 .middle4, .previewPaperA3 .middle5 {
+    margin-left: 360pt;
+}
+.previewPaperA3 .right, .previewPaperA3 .right2, .previewPaperA3 .right3,
+.previewPaperA3 .right4, .previewPaperA3 .right5 {
+    margin-left: 720pt;
+}
+.previewPaperA3 .boxOne {
+    height: 540pt;
+}
+.previewPaperA3 .boxTwo, .previewPaperA3 .boxThree, .previewPaperA3 .boxFour,
+.previewPaperA3 .boxFive, .previewPaperA3 .boxSix, .previewPaperA3 .boxSeven, 
+.previewPaperA3 .boxEight, .previewPaperA3 .boxNine, .previewPaperA3 .boxTen,
+.previewPaperA3 .boxTwelve, .previewPaperA3 .boxEleven, .previewPaperA3 .boxThirteen,
+.previewPaperA3 .boxFourteen {
+     height: 660pt;
+}
+.previewPaperA3 .left2, .previewPaperA3 .right2, .previewPaperA3 .middle2 {
+     top:720pt;
+}
+.previewPaperA3 .left3, .previewPaperA3 .right3, .previewPaperA3 .middle3 {
+    top:1440pt;
+}
+.previewPaperA3 .left4, .previewPaperA3 .right4, .previewPaperA3 .middle4 {
+    top:2180pt;
+}
+.previewPaperA3 .left5, .previewPaperA3 .right5, .previewPaperA3 .middle5 {
+    top:2910pt;
+}
+
+
+
+
+
+
+
+
+
+
+

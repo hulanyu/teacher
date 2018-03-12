@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="js/jquery.min.js"></script>
+  <link href="css/base.css" rel="stylesheet">
+  <style>
+    .MathJye table {
+      border-collapse: collapse;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      vertical-align: middle;
+      line-height: normal;
+      font-size: inherit;
+      _font-size: 100%;
+      font-style: normal;
+      font-weight: normal;
+      border: 0;
+      float: none;
+      display: inline-block;
+      zoom: 0;
+    }
+
+    table.edittable {
+      border-collapse: collapse;
+      text-align: center;
+      margin: 2px
+    }
+
+    table.edittable td,
+    table.edittable th {
+      line-height: 30px;
+      padding: 5px;
+      white-space: normal;
+      word-break: break-all;
+      border: 1px solid #000;
+      vertical-align: middle
+    }
+
+    table.composition {
+      border-collapse: collapse;
+      text-align: left;
+      margin: 2px;
+      width: 98%
+    }
+
+    table.composition td,
+    table.composition th {
+      line-height: 30px;
+      white-space: normal;
+      word-break: break-all;
+      border-width: 0;
+      vertical-align: middle
+    }
+
+    table.composition2 {
+      border-collapse: collapse;
+      width: auto
+    }
+
+    table.composition2 td,
+    table.composition2 th {
+      text-align: left;
+      line-height: 30px;
+      white-space: normal;
+      word-break: break-all;
+      border: none;
+      border-width: 0;
+      vertical-align: middle
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="topBtns">
+    <button class="btn printbtn" onclick="printpreview()">打印</button>
+    <select class="chocePage" value="">
+      <option value="1">A4单栏</option>
+      <option value="2">A3双栏</option>
+      <option value="3" selected>A3三栏</option>
+    </select>
+  </div>
+
+  <div class="previewPaperA3">
+    <div class="a4dLeftBar">
+      学校_______________________ 班级_______________________ 考号_______________________ 姓名_______________________
+    </div>
+    <div class="a4dMi">
+      <span class="line"></span>
+      <span class="text1">密</span>
+      <span class="line"></span>
+      <span class="text2">封</span>
+      <span class="line"></span>
+      <span class="text3">线</span>
+    </div>
+    <div class="left">
+      <div class="top">
+        <p class="title" id="title" style="font-size:14pt!important;"></p>
+        <p class="navs">
+          <span>
+            年级：
+            <span id="clname"></span>&nbsp;&nbsp;
+          </span>
+          <span>
+            科目：
+            <span id="sname"></span>&nbsp;&nbsp;
+          </span>
+          <span>
+            成绩：__________
+          </span>
+        </p>
+        <p class="navs">
+          <span>
+            本卷满分：
+            <span id="total_points"></span> 分
+          </span>&nbsp;&nbsp;
+          <span>
+            考试时间：
+            <span id="exam_minutes"></span> 分钟
+          </span>&nbsp;&nbsp;
+          <span>
+            考试方式：
+            <span id="testType"></span>
+          </span>
+        </p>
+      </div>
+      <div class="boxOne">
+
+      </div>
+    </div>
+
+    <div class="middle">
+      <div class="boxTwo">
+
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="boxThree"></div>
+    </div>
+
+    <div class="left2">
+      <div class="boxFour"></div>
+    </div>
+
+    <div class="middle2">
+      <div class="boxFive">
+
+      </div>
+    </div>
+    <div class="right2">
+      <div class="boxSix"></div>
+    </div>
+
+    <div class="left3">
+      <div class="boxSeven"></div>
+    </div>
+    <div class="middle3">
+      <div class="boxEight"></div>
+    </div>
+
+    <div class="right3">
+      <div class="boxNine">
+
+      </div>
+    </div>
+    <div class="left4">
+      <div class="boxTen"></div>
+    </div>
+    <div class="middle4">
+      <div class="boxEleven"></div>
+    </div>
+
+    <div class="right4">
+      <div class="boxTwelve">
+
+      </div>
+    </div>
+    <div class="left5">
+      <div class="boxThirteen"></div>
+    </div>
+    <div class="middle5">
+      <div class="boxFourteen"></div>
+    </div>
+
+    <div class="right5">
+      <div class="boxFifteen ">
+
+      </div>
+    </div>
+
+
+
+  </div>
+  <!-- 弹窗 -->
+  <div id="previewPaperloading" class="modal fade" aria-hidden="true">
+    <div class="loadingImg">
+      <img src="img/loading.gif" width="32" height="32" />加载中。。。</div>
+  </div>
+  <div class="setPrint">
+    <span>请设置打印属性</span>
+  </div>
+</body>
+<script src="/static/config.js"></script>
+<script>
+  //获取url中的参数
+  function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg); //匹配目标参数
+    if (r != null) return unescape(r[2]);
+    return null; //返回参数值
+  }
+  //判断浏览器
+  function getBrowser() {
+    var ua = window.navigator.userAgent;
+    var isIE = window.ActiveXObject != undefined && ua.indexOf("MSIE") != -1;
+    var isFirefox = ua.indexOf("Firefox") != -1;
+    var isOpera = window.opr != undefined;
+    var isChrome = ua.indexOf("Chrome") && window.chrome;
+    var isSafari = ua.indexOf("Safari") != -1 && ua.indexOf("Version") != -1;
+    if (isIE) {
+      return "IE";
+    } else if (isFirefox) {
+      return "Firefox";
+    } else if (isOpera) {
+      return "Opera";
+    } else if (isChrome) {
+      return "Chrome";
+    } else if (isSafari) {
+      return "Safari";
+    } else {
+      return "Unkown";
+    }
+  }
+  //判断浏览器
+  function checkBrowser() {
+    var ua = navigator.userAgent.toLocaleLowerCase();
+    var browserType = null;
+    if (ua.match(/msie/) != null || ua.match(/trident/) != null) {
+      browserType = "IE";
+      browserVersion = ua.match(/msie ([\d.]+)/) != null ? ua.match(/msie ([\d.]+)/)[1] : ua.match(/rv:([\d.]+)/)[1];
+    } else if (ua.match(/firefox/) != null) {
+      browserType = "火狐";
+    } else if (ua.match(/ubrowser/) != null) {
+      browserType = "UC";
+    } else if (ua.match(/opera/) != null) {
+      browserType = "欧朋";
+    } else if (ua.match(/bidubrowser/) != null) {
+      browserType = "百度";
+    } else if (ua.match(/metasr/) != null) {
+      browserType = "搜狗";
+    } else if (ua.match(/tencenttraveler/) != null || ua.match(/qqbrowse/) != null) {
+      browserType = "QQ";
+    } else if (ua.match(/maxthon/) != null) {
+      browserType = "遨游";
+    } else if (ua.match(/chrome/) != null) {
+      var is360 = _mime("type", "application/vnd.chromium.remoting-viewer");
+
+      function _mime(option, value) {
+        var mimeTypes = navigator.mimeTypes;
+        for (var mt in mimeTypes) {
+          if (mimeTypes[mt][option] == value) {
+            return true;
+          }
+        }
+        return false;
+      }
+      if (is360) {
+        browserType = '360';
+      } else {
+        browserType = "谷歌";
+      }
+
+    } else if (ua.match(/safari/) != null) {
+      browserType = "Safari";
+    }
+    return browserType;
+  }
+  //引入css
+  var linkNode = document.createElement("link");
+  linkNode.setAttribute("rel", "stylesheet");
+  linkNode.setAttribute("type", "text/css");
+  //判断浏览器
+  if (getBrowser() == "Unkown" || getBrowser() == "IE") {
+    linkNode.setAttribute("href", "css/ie.css");
+  }
+  if (checkBrowser() == "360") {
+    linkNode.setAttribute("href", "css/360.css");
+  }
+  document.head.appendChild(linkNode);
+  //刚进页面加载
+  var paper_id = localStorage.paper_id; //试卷id
+  var open_type = localStorage.open_type; //进入方式 1为本地存储 2为直接进入调用接口
+  var testDataB = {};
+  var paper;
+  var arr = [];
+
+  function htmlDecodeByRegExp(str) {
+    var s = "";
+    if (str.length == 0) return "";
+    s = str.replace(/&amp;/g, "&");
+    s = s.replace(/&lt;/g, "<");
+    s = s.replace(/&gt;/g, ">");
+    s = s.replace(/&nbsp;/g, " ");
+    s = s.replace(/&#39;/g, "\'");
+    s = s.replace(/&quot;/g, "\"");
+    return s;
+  }
+  //获取dpi
+  function js_getDPI() {
+    var arrDPI = new Array();
+    if (window.screen.deviceXDPI != undefined) {
+      arrDPI[0] = window.screen.deviceXDPI;
+      arrDPI[1] = window.screen.deviceYDPI;
+    } else {
+      var tmpNode = document.createElement("DIV");
+      tmpNode.style.cssText = "width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden";
+      document.body.appendChild(tmpNode);
+      arrDPI[0] = parseInt(tmpNode.offsetWidth);
+      arrDPI[1] = parseInt(tmpNode.offsetHeight);
+      tmpNode.parentNode.removeChild(tmpNode);
+    }
+    return arrDPI;
+  }
+  var dpi = js_getDPI()[1];
+  if (getUrlParam('open_type') == 1) {
+    var bigJson = JSON.parse(localStorage.getItem("bigJson")) || {};
+    testDataB = bigJson;
+    //请求数据获取试卷信息
+    $.ajax({
+      type: 'post',
+      dataType: "json",
+      url: req_api + "/ExamPaper/examPaperQustionLists",
+      data: {
+        pid: getUrlParam('paper_id'),
+        token: localStorage.jxtoken
+      },
+      success: function (data) {
+        var paper = data.data.exam_question_list[0]
+        $('#clname').html(paper.class); //年级
+        $('#sname').html(paper.subject); //科目
+        $('#title').html(paper.title); //标题
+        $('#total_points').html(parseInt(paper.total_points)); //总分
+        $('#exam_minutes').html(paper.exam_minutes); //总分
+        if (paper.exam_type == 1) {
+          $('#testType').html("闭卷"); //总分
+        } else {
+          $('#testType').html("开卷"); //总分 
+        }
+      }
+    })
+    if (testDataB != null) {
+      //获取dpi
+      function js_getDPI() {
+        var arrDPI = new Array();
+        if (window.screen.deviceXDPI != undefined) {
+          arrDPI[0] = window.screen.deviceXDPI;
+          arrDPI[1] = window.screen.deviceYDPI;
+        } else {
+          var tmpNode = document.createElement("DIV");
+          tmpNode.style.cssText =
+            "width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden";
+          document.body.appendChild(tmpNode);
+          arrDPI[0] = parseInt(tmpNode.offsetWidth);
+          arrDPI[1] = parseInt(tmpNode.offsetHeight);
+          tmpNode.parentNode.removeChild(tmpNode);
+        }
+        return arrDPI;
+      }
+      //console.log(bigJson);
+      for (var i = 0; i < testDataB.length; i++) {
+        if (testDataB[i].content) {
+          for (var j = 0; j < testDataB[i].content.length; j++) {
+            if (testDataB[i].content[j].smContent) {
+              for (var k = 0; k < testDataB[i].content[j].smContent.length; k++) {
+                if (testDataB[i].content[j].smContent[k]) {
+                  testDataB[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB[i].content[j].smContent[k]
+                    .content);
+                  testDataB[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB[i].content[j].smContent[k]
+                    .content);
+                  testDataB[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB[i].content[j].smContent[k]
+                    .content);
+                  testDataB[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB[i].content[j].smContent[k]
+                    .content);
+                  testDataB[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB[i].content[j].smContent[k]
+                    .content);
+                  testDataB[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB[i].content[j].smContent[k]
+                    .content);
+                  testDataB[i].content[j].smContent[k].content = "<span>" + testDataB[i].content[j].smContent[k].content +
+                    "</span>"
+                  testDataB[i].content[j].smContent[k].content = testDataB[i].content[j].smContent[k].content.replace(
+                    />/, ">" + testDataB[i].content[j].smContent[k].number + ". (" + testDataB[i].content[j].smContent[
+                      k].point + "分)");
+                  //testDataB[i].content[j].smContent[k].content = testDataB[i].content[j].smContent[k].content.replace(/<\/p>/,"</span>");
+                  if (k > 0 && testDataB[i].content[j].smContent[k].cname == testDataB[i].content[j].smContent[k - 1].cname) {
+                    arr.push(testDataB[i].content[j].smContent[k].content);
+                  } else {
+                    if (testDataB[i].content[j].child_question_no == 1) {
+                      testDataB[i].content[j].child_question_no = "一";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 2) {
+                      testDataB[i].content[j].child_question_no = "二";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 3) {
+                      testDataB[i].content[j].child_question_no = "三";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 4) {
+                      testDataB[i].content[j].child_question_no = "四";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 5) {
+                      testDataB[i].content[j].child_question_no = "五";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 6) {
+                      testDataB[i].content[j].child_question_no = "六";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 7) {
+                      testDataB[i].content[j].child_question_no = "七";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 8) {
+                      testDataB[i].content[j].child_question_no = "八";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 9) {
+                      testDataB[i].content[j].child_question_no = "九";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 10) {
+                      testDataB[i].content[j].child_question_no = "十";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 11) {
+                      testDataB[i].content[j].child_question_no = "十一";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 12) {
+                      testDataB[i].content[j].child_question_no = "十二";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 13) {
+                      testDataB[i].content[j].child_question_no = "十三";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 14) {
+                      testDataB[i].content[j].child_question_no = "十四";
+                    }
+                    if (testDataB[i].content[j].child_question_no == 15) {
+                      testDataB[i].content[j].child_question_no = "十五";
+                    }
+                    arr.push("<p class='title'>" + testDataB[i].content[j].child_question_no + "、" + testDataB[i].content[
+                      j].smContent[k].cname + "</p>" + testDataB[i].content[j].smContent[k].content);
+                  }
+
+                }
+              }
+            }
+          }
+        }
+      }
+      $('.previewPaperA3').show();
+      $('#previewPaperloading').hide();
+      showpaperdata(arr);
+    }
+  } else {
+    $.ajax({
+      type: 'post',
+      dataType: "json",
+      url: req_api + "/ExamPaper/examPaperQustionLists",
+      data: {
+        pid: getUrlParam('paper_id'),
+        token: localStorage.jxtoken
+      },
+      success: function (data) {
+        //console.log(data);
+        if (data.data.exam_question_list[0].exam_question_info == null) {
+          $('.loadingImg').eq(0).hide();
+          setTimeout(function () {
+            alert("无试卷信息");
+            window.opener = null;
+            window.open('', '_self');
+            window.close();
+          }, 500);
+          return;
+        }
+
+        var exam_question_list = data.data.exam_question_list[0];
+        var paper = []; //试卷信息
+        paper[0] = {};
+        paper[0].update_time = exam_question_list.update_time;
+        paper[0].uid = exam_question_list.uid;
+        paper[0].type = exam_question_list.type;
+        paper[0].total_points = exam_question_list.total_points;
+        paper[0].title = exam_question_list.title;
+        paper[0].term = exam_question_list.term;
+        paper[0].subject = exam_question_list.subject;
+        paper[0].sid = exam_question_list.sid;
+        paper[0].school_id = exam_question_list.school_id;
+        paper[0].is_show = exam_question_list.is_show;
+        paper[0].id = exam_question_list.id;
+        paper[0].exam_type = exam_question_list.exam_type;
+        paper[0].exam_minutes = exam_question_list.exam_minutes;
+        paper[0].create_time = exam_question_list.create_time;
+        paper[0].clid = exam_question_list.clid;
+        paper[0].class = exam_question_list.class;
+
+        $('#clname').html(paper[0].class); //年级
+        $('#sname').html(paper[0].subject); //科目
+        $('#title').html(paper[0].title); //标题
+        $('#total_points').html(parseInt(paper[0].total_points)); //总分
+        $('#exam_minutes').html(paper[0].exam_minutes); //总分
+        if (paper[0].exam_type == 1) {
+          $('#testType').html("闭卷"); //总分
+        } else {
+          $('#testType').html("开卷"); //总分 
+        }
+
+        //exam_question_list.exam_question_info = exam_question_list.exam_question_info.replace(/&quot;/g,"\"");
+        exam_question_list.exam_question_info = JSON.parse(exam_question_list.exam_question_info);
+        testDataB.data = exam_question_list.exam_question_info;
+        if (testDataB.data != null) {
+          //console.log(js_getDPI()[1]);
+          var dpi = js_getDPI()[1];
+          //console.log(bigJson.data);
+          for (var i = 0; i < testDataB.data.length; i++) {
+            if (testDataB.data[i].content) {
+              for (var j = 0; j < testDataB.data[i].content.length; j++) {
+                if (testDataB.data[i].content[j].smContent) {
+                  for (var k = 0; k < testDataB.data[i].content[j].smContent.length; k++) {
+                    if (testDataB.data[i].content[j].smContent[k]) {
+                      testDataB.data[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB.data[i].content[
+                        j].smContent[k].content);
+                      testDataB.data[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB.data[i].content[
+                        j].smContent[k].content);
+                      testDataB.data[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB.data[i].content[
+                        j].smContent[k].content);
+                      testDataB.data[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB.data[i].content[
+                        j].smContent[k].content);
+                      testDataB.data[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB.data[i].content[
+                        j].smContent[k].content);
+                      testDataB.data[i].content[j].smContent[k].content = htmlDecodeByRegExp(testDataB.data[i].content[
+                        j].smContent[k].content);
+                      testDataB.data[i].content[j].smContent[k].content = "<span>" + testDataB.data[i].content[j]
+                        .smContent[k].content + "</span><br/>"
+                      testDataB.data[i].content[j].smContent[k].content = testDataB.data[i].content[j].smContent[
+                        k].content.replace(/>/, ">" + testDataB.data[i].content[j].smContent[k].number + ". (" +
+                        testDataB.data[i].content[j].smContent[k].point + "分)");
+                      //testDataB.data[i].content[j].smContent[k].content = testDataB.data[i].content[j].smContent[k].content.replace(/<\/p>/,"</span>");
+                      if (k > 0 && testDataB.data[i].content[j].smContent[k].cname == testDataB.data[i].content[j]
+                        .smContent[k - 1].cname) {
+                        arr.push(testDataB.data[i].content[j].smContent[k].content);
+                      } else {
+                        if (testDataB.data[i].content[j].child_question_no == 1) {
+                          testDataB.data[i].content[j].child_question_no = "一";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 2) {
+                          testDataB.data[i].content[j].child_question_no = "二";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 3) {
+                          testDataB.data[i].content[j].child_question_no = "三";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 4) {
+                          testDataB.data[i].content[j].child_question_no = "四";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 5) {
+                          testDataB.data[i].content[j].child_question_no = "五";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 6) {
+                          testDataB.data[i].content[j].child_question_no = "六";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 7) {
+                          testDataB.data[i].content[j].child_question_no = "七";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 8) {
+                          testDataB.data[i].content[j].child_question_no = "八";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 9) {
+                          testDataB.data[i].content[j].child_question_no = "九";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 10) {
+                          testDataB.data[i].content[j].child_question_no = "十";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 11) {
+                          testDataB.data[i].content[j].child_question_no = "十一";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 12) {
+                          testDataB.data[i].content[j].child_question_no = "十二";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 13) {
+                          testDataB.data[i].content[j].child_question_no = "十三";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 14) {
+                          testDataB.data[i].content[j].child_question_no = "十四";
+                        }
+                        if (testDataB.data[i].content[j].child_question_no == 15) {
+                          testDataB.data[i].content[j].child_question_no = "十五";
+                        }
+                        arr.push("<p class='title'>" + testDataB.data[i].content[j].child_question_no + "、" +
+                          testDataB.data[i].content[j].smContent[k].cname + "</p>" + testDataB.data[i].content[
+                            j].smContent[k].content);
+                      }
+
+                    }
+                  }
+                }
+              }
+            }
+          }
+          $('.previewPaperA3').show();
+          $('#previewPaperloading').hide();
+          showpaperdata(arr);
+        }
+
+      },
+      error: function (e) {
+        //console.log(e)
+        alert("请求错误");
+      }
+    });
+  }
+
+  function showpaperdata(arr) {
+    $('.boxOne').eq(0).html(arr);
+    setTimeout(function () {
+      $(".boxOne").children().addClass("questions");
+    }, 300)
+
+    //处理图片
+    $('img').load(function () {
+      $('img').eq(i).css('vertical-align', "middle");
+    })
+
+    setTimeout(function () {
+      var index = 0;
+      var ht1 = 660;
+      var ht2 = 750;
+      //判断浏览器
+      if (getBrowser() == "Unkown" || getBrowser() == "IE") {
+        ht1 = 560;
+        ht2 = 650;
+        $('.a4dLeftBar').html(
+          "学校____________________  班级____________________  考号___________________  姓名____________________")
+      }
+
+      //封装
+      function showpaper(index, he) {
+        var height1 = 0;
+        var height2 = 0;
+        var arr1 = [];
+        var arr2 = [];
+        var index2 = index;
+        for (var z = index + 1; z < $('.questions').length; z++) {
+          //console.log($('.questions').eq(z).height());
+          height1 += $('.questions').eq(z).height();
+          height2 = Math.ceil(height1 / (dpi / 72));
+          if (height2 < he) {
+            arr1.push($('.questions').eq(z));
+            index2 = z;
+            cha1 = he - height2;
+            //console.log(cha1);
+          } else if (height2 > he) {
+            arr2.push($('.questions').eq(z));
+          }
+          //console.log(arr1);
+        }
+        //console.log(arr1)
+        //console.log(index2);
+        var re = {};
+        re.index = index2;
+        re.arr1 = arr1;
+        re.arr2 = arr2;
+        return re;
+      }
+      var ret1 = showpaper(-1, ht1);
+      //console.log(ret1);
+      $('.boxOne').eq(0).html(ret1.arr1);
+      if (ret1.arr2.length > 0) {
+        $('.boxTwo').eq(0).html(ret1.arr2);
+        var ret2 = showpaper(ret1.index, ht2);
+        $('.boxTwo').eq(0).html(ret2.arr1);
+      } else {
+        $('.left2').hide();
+        $('.middle2').hide();
+        $('.right2').hide();
+        $('.left3').hide();
+        $('.middle3').hide();
+        $('.right3').hide();
+        $('.left4').hide();
+        $('.middle4').hide();
+        $('.right4').hide();
+        $('.left5').hide();
+        $('.middle5').hide();
+        $('.right5').hide();
+      }
+      //第二个
+      if (ret2) {
+        if (ret2.arr2.length > 0) {
+          $('.boxThree').eq(0).html(ret2.arr2);
+          var ret3 = showpaper(ret2.index, ht2);
+          $('.boxThree').eq(0).html(ret3.arr1);
+          //console.log(ret3.arr2.length);
+          if (ret3.arr2.length > 0) {
+            $('.boxFour').eq(0).html(ret3.arr2);
+            var ret4 = showpaper(ret3.index, ht2);
+            $('.boxFour').eq(0).html(ret4.arr1);
+            if (ret4.arr2.length > 0) {
+              $('.boxFive').eq(0).html(ret4.arr2);
+              var ret5 = showpaper(ret4.index, ht2);
+              $('.boxFive').eq(0).html(ret5.arr1);
+              if (ret5.arr2.length > 0) {
+                $('.boxSix').eq(0).html(ret5.arr2);
+                var ret6 = showpaper(ret5.index, ht2);
+                $('.boxSix').eq(0).html(ret6.arr1);
+                if (ret6.arr2.length > 0) {
+                  $('.boxSeven').eq(0).html(ret6.arr2);
+                  var ret7 = showpaper(ret6.index, ht2);
+                  $('.boxSeven').eq(0).html(ret7.arr1);
+                  if (ret7.arr2.length > 0) {
+                    $('.boxEight').eq(0).html(ret7.arr2);
+                    var ret8 = showpaper(ret7.index, ht2);
+                    $('.boxEight').eq(0).html(ret8.arr1);
+                    if (ret8.arr2.length > 0) {
+                      $('.boxNine').eq(0).html(ret8.arr2);
+                      var ret9 = showpaper(ret8.index, ht2);
+                      $('.boxNine').eq(0).html(ret9.arr1);
+                      if (ret9.arr2.length > 0) {
+                        $('.boxTen').eq(0).html(ret9.arr2);
+                        var ret10 = showpaper(ret9.index, ht2);
+                        $('.boxTen').eq(0).html(ret10.arr1);
+                        //console.log(ret10.arr2.length)
+                        if (ret10.arr2.length > 0) {
+                          $('.boxEleven').eq(0).html(ret10.arr2);
+                          var ret11 = showpaper(ret10.index, ht2);
+                          $('.boxEleven').eq(0).html(ret11.arr1);
+                          if (ret11.arr2.length > 0) {
+                            $('.boxTwelve').eq(0).html(ret11.arr2);
+                            var ret12 = showpaper(ret11.index, ht2);
+                            $('.boxTwelve').eq(0).html(ret12.arr1);
+                            if (ret12.arr2.length > 0) {
+                              $('.boxThirteen').eq(0).html(ret12.arr2);
+                              var ret13 = showpaper(ret12.index, ht2);
+                              $('.boxThirteen').eq(0).html(ret13.arr1);
+                              if (ret13.arr2.length > 0) {
+                                $('.boxFourteen').eq(0).html(ret13.arr2);
+                                var ret14 = showpaper(ret13.index, ht2);
+                                $('.boxFourteen').eq(0).html(ret14.arr1);
+                                if (ret14.arr2.length > 0) {
+                                  $('.boxFifteen ').eq(0).html(ret14.arr2);
+                                  var ret15 = showpaper(ret14.index, ht2);
+                                  $('.boxFifteen ').eq(0).html(ret15.arr1);
+                                }
+                              }
+                            } else {
+                              $('.left5').hide();
+                              $('.middle5').hide();
+                              $('.right5').hide();
+                            }
+                          } else {
+                            $('.left5').hide();
+                            $('.middle5').hide();
+                            $('.right5').hide();
+                          }
+                        } else {
+                          $('.left5').hide();
+                          $('.middle5').hide();
+                          $('.right5').hide();
+                        }
+                      } else {
+                        $('.left4').hide();
+                        $('.middle4').hide();
+                        $('.right4').hide();
+                        $('.left5').hide();
+                        $('.middle5').hide();
+                        $('.right5').hide();
+                      }
+                    } else {
+                      $('.left4').hide();
+                      $('.middle4').hide();
+                      $('.right4').hide();
+                      $('.left5').hide();
+                      $('.middle5').hide();
+                      $('.right5').hide();
+                    }
+                  } else {
+                    $('.left4').hide();
+                    $('.middle4').hide();
+                    $('.right4').hide();
+                    $('.left5').hide();
+                    $('.middle5').hide();
+                    $('.right5').hide();
+                  }
+                } else {
+                  $('.left3').hide();
+                  $('.middle3').hide();
+                  $('.right3').hide();
+                  $('.left4').hide();
+                  $('.middle4').hide();
+                  $('.right4').hide();
+                  $('.left5').hide();
+                  $('.middle5').hide();
+                  $('.right5').hide();
+                }
+              } else {
+                $('.left3').hide();
+                $('.middle3').hide();
+                $('.right3').hide();
+                $('.left4').hide();
+                $('.middle4').hide();
+                $('.right4').hide();
+                $('.left5').hide();
+                $('.middle5').hide();
+                $('.right5').hide();
+              }
+            } else {
+              $('.left3').hide();
+              $('.middle3').hide();
+              $('.right3').hide();
+              $('.left4').hide();
+              $('.middle4').hide();
+              $('.right4').hide();
+              $('.left5').hide();
+              $('.middle5').hide();
+              $('.right5').hide();
+            }
+          } else {
+            $('.left2').hide();
+            $('.middle2').hide();
+            $('.right2').hide();
+            $('.left3').hide();
+            $('.middle3').hide();
+            $('.right3').hide();
+            $('.left4').hide();
+            $('.middle4').hide();
+            $('.right4').hide();
+            $('.left5').hide();
+            $('.middle5').hide();
+            $('.right5').hide();
+          }
+        } else {
+          $('.left2').hide();
+          $('.middle2').hide();
+          $('.right2').hide();
+          $('.left3').hide();
+          $('.middle3').hide();
+          $('.right3').hide();
+          $('.left4').hide();
+          $('.middle4').hide();
+          $('.right4').hide();
+          $('.left5').hide();
+          $('.middle5').hide();
+          $('.right5').hide();
+        }
+      }
+
+
+      $('table').attr("border", "1").attr("cellpadding", "2").attr("cellspacing", "0")
+
+    }, 500)
+  }
+
+  //切换页
+  $('.chocePage').change(function () {
+    if ($(this).val() == 2) {
+      location.href = "Question_previewPaperA4D.html?paper_id=" + getUrlParam('paper_id') + "&open_type=" +
+        getUrlParam('open_type');
+    }
+    if ($(this).val() == 1) {
+      location.href = "Question_previewPaperA4.html?paper_id=" + getUrlParam('paper_id') + "&open_type=" +
+        getUrlParam('open_type');
+    }
+  })
+  //打印
+  function printpreview() {
+    $('.setPrint').fadeIn();
+    setTimeout(function () {
+      $('.setPrint').hide();　　 // 打印页面预览   
+      window.print();
+    }, 3000);　　　　
+  }
+
+</script>

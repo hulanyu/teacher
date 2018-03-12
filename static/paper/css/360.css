@@ -1,0 +1,12 @@
+.previewPaperA4D .a4dLeftBar {
+    left: -360pt;
+}
+.previewPaperA4D .a4dMi .text1, .previewPaperA4D .a4dMi .text2, .previewPaperA4D .a4dMi .text3 {
+    top: 14pt;
+}
+.previewPaperA3 .a4dLeftBar {
+    left: -323pt;
+}
+.previewPaperA3 .a4dMi .text1, .previewPaperA3 .a4dMi .text2, .previewPaperA3 .a4dMi .text3 {
+    top: -8pt;
+}

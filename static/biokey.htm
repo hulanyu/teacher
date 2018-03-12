@@ -1,0 +1,110 @@
+﻿<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/style">
+        BODY{margin:0;}
+    </style>
+</head>
+<body>
+    <object classid="clsid:CA69969C-2F27-41D3-954D-A48B941C3BA7" id="Biokey" width="0" height="0"></object>
+    <br /><span id="msg"></span>
+</body>
+</html>
+<!--<script type="text/javascript" src="/static/js/third-party/jquery-1.10.2.min.js"></script>-->
+<script language="javascript" type="text/javascript">
+    function shMsg(text) { document.getElementById("msg").innerHTML += text + "<br />"; }
+    var Biokey = document.getElementById("Biokey");
+    var dbHandle = 0;
+    var iRet = 0;
+    var regCount = 0;
+    var idIndex = 1;
+    window.onload = function () {
+        //setInterval(()=>{sendMsg({code:"fp_OnEnroll",data:{ret:true,template:"我来自Biokey"}});},3000);
+        if (Biokey == null) { sendMsg({ code: "fp_error", data: "您的浏览器不支持指纹阅读组件，请安装好驱动后使用IE浏览器进行操作！" }); Biokey = null; return; }
+        //初始化指纹阅读器
+        var iRet = 0;
+        try { iRet = Biokey.InitEngine(); } catch (e) { sendMsg({ code: "fp_error", data: "初始化指纹阅读器失败，请确认您使用的是IE浏览器并且已安装好指纹阅读器驱动！" }); Biokey = null; return; }
+        shMsg("初始化指纹阅读器，ret=" + iRet);
+        shMsg("指纹阅读器数量=" + Biokey.SensorCount);
+        shMsg("指纹阅读器SN=" + Biokey.SensorSN);
+        if (Biokey.SensorCount < 1) { sendMsg({ code: "fp_error", data: "未检测到指纹阅读器，请插入指纹阅读器后刷新当前页面！" }); Biokey = null; return; }
+        //设置指纹所得计算版本为10,配合硬件SDK及1.0.不设置默认是9，这是一个坑。
+        Biokey.FPEngineVersion = "10";
+        //设置指纹阅读器序号为第一个
+        Biokey.SensorIndex = 0;
+        shMsg("指纹阅读器index=" + 0);
+        //创建指纹内存库
+        BiokeyDBHandle = Biokey.CreateFPCacheDB();
+        if (Biokey.BiokeyDBHandle <= 0) { sendMsg({ code: "fp_error", data: "创建指纹阅读器所需内存失败！" }); Biokey = null; return; }
+        shMsg("指纹阅读器DB句柄=" + BiokeyDBHandle);
+        sendMsg({ code: "fp_ok", data: "" });
+        //        reveivedMsg({ code: "fp_reg",data:3 });
+    }
+    window.onunload = function () {
+        try{Biokey.CancelCapture(); Biokey.EndEngine();}catch(e){}
+    }
+    function reveivedMsg(msg) {
+        shMsg("收到Vue发来的消息：" + JSON.stringify(msg));
+        switch (msg.code) {
+            case "fp_reg":     //登记指纹
+                regCount = 0;
+                try{
+                    Biokey.CancelEnroll();
+                    Biokey.EnrollCount = msg.data || 3;
+                    Biokey.BeginEnroll();
+                }catch(e){
+                    
+                }
+                break;
+            case "fp_reg_cancel":
+                regCount = 0;
+                try{
+                    Biokey.CancelEnroll();
+                }catch(e){
+                    
+                }
+            case "fp_add":     //压入指纹[{id,指纹数据}]
+                var addedCount = 0;
+                for (var k = 0; k < msg.data.length; k++) {
+                    iRet = 0;
+                    try { iRet = Biokey.AddRegTemplateStrToFPCacheDB(BiokeyDBHandle, parseInt(msg.data[k].entry_id.toString()), msg.data[k].entry_list); } catch (e) { }
+                    if (iRet > 0) addedCount++;
+                }
+                sendMsg({ code: "fp_add", data: { add: addedCount, total: msg.data.length} });
+                break;
+            case "fp_start":   //开始比对
+                if (Biokey != null) Biokey.BeginCapture();
+                break;
+            case "fp_stop":    //结束比对
+                if (Biokey != null) Biokey.CancelCapture();
+                break;
+        }
+    }
+    function sendMsg(msg) {
+        if (top == self) return;
+        top && top.postMessage(msg, '*');
+    }
+    window.addEventListener('message', function (e) { reveivedMsg(e.data); });
+</script>
+<script language="javascript" for="Biokey" event="OnFeatureInfo(AQuality)" type="text/javascript">
+    if(!Biokey.IsRegister)return;
+    shMsg("OnFeatureInfo:" + AQuality);
+    sendMsg({code:"fp_OnFeatureInfo",data:AQuality});
+    //0：好的指纹特征 
+    //1: 特征点不够 
+    //2: 其它原因导致不能取到指纹特征 
+    //-1:  可疑指纹
+</script>
+<script language="javascript" for="Biokey" event="OnEnroll(ActionResult,ATemplate)" type="text/javascript">
+    var tmpStr = Biokey.GetTemplateAsString();
+    shMsg("OnEnroll:" + ActionResult + "," + tmpStr);
+    sendMsg({code:"fp_OnEnroll",data:{ret:ActionResult,template:tmpStr}});
+</script>
+<script language="javascript" for="Biokey" event="OnCapture(ActionResult,ATemplate)" type="text/javascript">
+    var tmpStr = Biokey.GetTemplateAsString();
+    var score = 8;
+    var processedNum = 1;
+    var ret = Biokey.IdentificationFromStrInFPCacheDB(BiokeyDBHandle,tmpStr, score, processedNum);
+    sendMsg({ code: "fp_OnCapture", data: ret });
+</script>
